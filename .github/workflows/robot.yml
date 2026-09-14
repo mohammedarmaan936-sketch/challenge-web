@@ -1,0 +1,8 @@
+name: First Automation
+on: [push]
+jobs:
+  test-the-robot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo "Hello Engineer. I am awake and ready to automate."
