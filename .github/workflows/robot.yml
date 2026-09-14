@@ -1,7 +1,21 @@
 name: Container Build Pipeline
 on: [push]
 jobs:
+  # JOB 1: Security and Best Practice Scan
+  lint-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Run Hadolint Scanner
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+  # JOB 2: The Build and Push (Only runs if Job 1 passes)
   build-and-push:
+    needs: lint-dockerfile    # <--- THIS IS THE GATE
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -15,5 +29,5 @@ jobs:
 
       - name: Build and Push Docker Container
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/automated-challenge:v2 .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/automated-challenge:v2
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/automated-challenge:v3 .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/automated-challenge:v3
